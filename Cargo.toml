@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 clap = "~2.27.0"
 log = "0.4"
+ctrlc = "3.2"
 
 [dependencies.anyhow]
 version  = "1.0.45"

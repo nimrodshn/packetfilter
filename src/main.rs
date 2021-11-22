@@ -12,7 +12,7 @@ const BYTECODE: &[u8] = include_bytes!("../bpf/bytecode.arm64.o");
 #[cfg(target_arch = "x86_64")]
 const BYTECODE: &[u8] = include_bytes!("../bpf/bytecode.x86.o");
 
-fn main() -> Result<()> {
+fn main() {
     let matches = App::new("packetfilter")
         .version("0.1.0")
         .about("An eBPF based packetfilter")
@@ -31,9 +31,10 @@ fn main() -> Result<()> {
         .get_matches();
 
     if let Some(args) = matches.subcommand_matches(RUN_COMMAND) {
-        return run_command(args);
+        if let Err(e) = run_command(args) {
+            eprint!("Unexpected error occurred: {:#}", e)
+        }
     }
-    Ok(())
 }
 
 fn run_command(args: &ArgMatches) -> Result<()> {

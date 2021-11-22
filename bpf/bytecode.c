@@ -30,7 +30,7 @@ int _xdp_ip_filter(struct xdp_md *ctx) {
     // // get the ip to filter from the ip_filtered map
     // ip = bpf_map_lookup_elem(&ip_map, &key);
     // if (!ip){
-    //     return XDP_PASS;
+    //     return XDP_DROP;
     // }
     // bpf_printk("the ip address to filter is %u\n", ip);
     return XDP_PASS;
