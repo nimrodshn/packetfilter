@@ -12,7 +12,8 @@ const BYTECODE: &[u8] = include_bytes!("../bpf/bytecode.arm64.o");
 #[cfg(target_arch = "x86_64")]
 const BYTECODE: &[u8] = include_bytes!("../bpf/bytecode.x86.o");
 
-fn main() {
+#[tokio::main]
+async fn main() -> Result<()> {
     let matches = App::new("packetfilter")
         .version("0.1.0")
         .about("An eBPF based packetfilter")
@@ -31,10 +32,9 @@ fn main() {
         .get_matches();
 
     if let Some(args) = matches.subcommand_matches(RUN_COMMAND) {
-        if let Err(e) = run_command(args) {
-            eprint!("Unexpected error occurred: {:#}", e)
-        }
+        return run_command(args);
     }
+    Ok(())
 }
 
 fn run_command(args: &ArgMatches) -> Result<()> {
@@ -44,7 +44,5 @@ fn run_command(args: &ArgMatches) -> Result<()> {
     };
 
     let mut code = Code::new(&bpf_program)?;
-    code.exec()?;
-
-    Ok(())
+    code.exec()
 }

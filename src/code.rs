@@ -1,6 +1,7 @@
 use anyhow::Result;
-use aya::programs::{Xdp, XdpFlags};
+use aya::programs::{Xdp, XdpFlags, };
 use aya::{Bpf};
+use aya::maps::{MapRefMut, HashMap};
 use std::{
     convert::TryInto,
     sync::Arc,
@@ -8,9 +9,14 @@ use std::{
     thread,
     time::Duration
 };
-use log::debug;
+use log::{debug};
+use std::convert::TryFrom;
+use tokio::task;
 
-const IFACE: &str = "eth0";
+
+const IFACE : &str = "eth0";
+const DEFAULT_KEY : u32 = 0;
+const BPF_NONEXIST : u64 = 2;
 
 pub struct Code {
     bpf: Bpf,
@@ -28,13 +34,22 @@ impl Code {
             p.name().to_owned()
         }).collect::<Vec<_>>();
 
-        for name in program_names {          
+        for name in program_names {
             let probe: &mut Xdp = self.bpf.program_mut(&name)?.try_into()?;
             probe.load()?;
-            debug!("loaded {}", name);
-
             probe.attach(IFACE, XdpFlags::default())?;
         }
+
+        let events: HashMap<MapRefMut, u32, u32> = HashMap::try_from(self.bpf.map_mut("events")?)?;
+        task::spawn(async move {
+            loop {
+                unsafe {
+                    if let Ok(ip_addr) = events.get(&DEFAULT_KEY, BPF_NONEXIST)  {
+                        println!("Recieved packet from {}!", ip_addr);
+                    }
+                }
+            }
+        });
 
         let running = Arc::new(AtomicBool::new(true));
         let r = running.clone();

@@ -1,2 +1,3 @@
 /target
-bytecode.x86.o
+/bpf/bytecode.x86.o
+.vscode/
