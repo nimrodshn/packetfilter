@@ -1,22 +1,20 @@
 use anyhow::Result;
-use aya::programs::{Xdp, XdpFlags, };
-use aya::{Bpf};
-use aya::maps::{MapRefMut, HashMap};
+use aya::maps::{HashMap, MapRefMut};
+use aya::programs::{Xdp, XdpFlags};
+use aya::Bpf;
+use std::convert::TryFrom;
 use std::{
     convert::TryInto,
-    sync::Arc,
     sync::atomic::{AtomicBool, Ordering},
+    sync::Arc,
     thread,
-    time::Duration
+    time::Duration,
 };
-use log::{debug};
-use std::convert::TryFrom;
 use tokio::task;
 
-
-const IFACE : &str = "eth0";
-const DEFAULT_KEY : u32 = 0;
-const BPF_NONEXIST : u64 = 2;
+const IFACE: &str = "eth0";
+const DEFAULT_KEY: u32 = 0;
+const BPF_NONEXIST: u64 = 2;
 
 pub struct Code {
     bpf: Bpf,
@@ -29,10 +27,11 @@ impl Code {
     }
 
     pub fn exec(&mut self) -> Result<()> {
-
-        let program_names = self.bpf.programs().map(|p| {
-            p.name().to_owned()
-        }).collect::<Vec<_>>();
+        let program_names = self
+            .bpf
+            .programs()
+            .map(|p| p.name().to_owned())
+            .collect::<Vec<_>>();
 
         for name in program_names {
             let probe: &mut Xdp = self.bpf.program_mut(&name)?.try_into()?;
@@ -44,7 +43,7 @@ impl Code {
         task::spawn(async move {
             loop {
                 unsafe {
-                    if let Ok(ip_addr) = events.get(&DEFAULT_KEY, BPF_NONEXIST)  {
+                    if let Ok(ip_addr) = events.get(&DEFAULT_KEY, BPF_NONEXIST) {
                         println!("Recieved packet from {}!", ip_addr);
                     }
                 }
@@ -53,12 +52,13 @@ impl Code {
 
         let running = Arc::new(AtomicBool::new(true));
         let r = running.clone();
-    
+
         // Create a Ctrl-C event listener.
         ctrlc::set_handler(move || {
             r.store(false, Ordering::SeqCst);
-        }).expect("Error setting Ctrl-C handler");
-    
+        })
+        .expect("Error setting Ctrl-C handler");
+
         // Loop waiting for Ctrl-C
         println!("Waiting for Ctrl-C...");
         while running.load(Ordering::SeqCst) {
