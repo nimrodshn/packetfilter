@@ -32,17 +32,18 @@ async fn main() -> Result<()> {
         .get_matches();
 
     if let Some(args) = matches.subcommand_matches(RUN_COMMAND) {
-        return run_command(args);
+        return run_command(args).await;
     }
+
     Ok(())
 }
 
-fn run_command(args: &ArgMatches) -> Result<()> {
+async fn run_command(args: &ArgMatches<'_>) -> Result<()> {
     let bpf_program: Vec<u8> = match args.value_of(BPF_PROGRAM_FILE) {
         Some(path) => fs::read(path)?,
         None => BYTECODE.to_vec(),
     };
 
     let mut code = Code::new(&bpf_program)?;
-    code.exec()
+    code.exec().await
 }

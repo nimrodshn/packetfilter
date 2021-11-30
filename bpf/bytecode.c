@@ -1,16 +1,50 @@
 #include <linux/if_ether.h>
 #include <linux/ip.h>
-#include <linux/in.h>
+#include <netinet/in.h>
 #include <uapi/linux/bpf.h>
 #include <linux/netdevice.h>
+#include <net/ethernet.h>
 #include <linux/version.h>
 #include "bpf_helpers.h"
 
-struct bpf_map_def SEC("maps/events") EVENTS = {
-    .type        = BPF_MAP_TYPE_HASH,
+struct bpf_map_def SEC("maps/events") events = {
+    .type        = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
     .key_size    = sizeof(__u32),
     .value_size  = sizeof(__u32),
-    .max_entries = 1,
+    .max_entries = 1024,
+};
+
+struct ipv4_header {
+    unsigned int src;
+    unsigned int dst;
+};
+
+const int IPV6_ALEN = 16;
+
+struct ipv6hdr {
+    uint32_t 	vtc_flow;
+    uint16_t 	payload_len;
+    uint8_t 	proto;
+    uint8_t 	hop_limits;
+    uint8_t 	src_addr [IPV6_ALEN];
+    uint8_t 	dst_addr [IPV6_ALEN];
+};
+
+struct ipv6_header {
+    uint8_t 	src_addr [IPV6_ALEN];
+    uint8_t 	dst_addr [IPV6_ALEN];
+};
+
+union ip_header {
+    struct ipv4_header ipv4;
+    struct ipv6_header ipv6;
+};
+
+struct __attribute__((__packed__)) eth_packet {
+    unsigned char h_dest[ETH_ALEN];
+    unsigned char h_source[ETH_ALEN];
+    u_int16_t h_protocol;
+    union ip_header ipheader;
 };
 
 SEC("xdp")
@@ -21,25 +55,50 @@ int _xdp_ip_filter(struct xdp_md *ctx) {
     struct ethhdr *eth = data;
 
     // check packet size
-    if (eth + 1 > data_end) {
+    if ((void*)eth + sizeof(*eth) > data_end) {
         return XDP_PASS;
     }
 
-    // get the source address of the packet
-    struct iphdr *iph = data + sizeof(struct ethhdr);
-    if (iph + 1 > data_end) {
+    // check packet size
+    struct iphdr *ip = data + sizeof(*eth);
+    if ((void*)ip + sizeof(*ip) > data_end) {
         return XDP_PASS;
     }
 
-    __u32 ip_src = iph->saddr;
-    bpf_printk("source ip address is %u\n", ip_src);
+    struct eth_packet packet = {
+        .h_protocol = eth->h_proto,
+    };
 
-    // key of the maps
-    __u32 key = 0;
+    for (int i=0; i<ETH_ALEN; i++) {
+        packet.h_source[i] = eth->h_source[i];
+        packet.h_dest[i] = eth->h_dest[i];
+    };
 
-    bpf_printk("starting xdp ip filter\n");
-    // send the ip to the userspace program.
-    bpf_map_update_elem(&EVENTS, &key, &ip_src, BPF_ANY);
+    if (packet.h_protocol == htons(ETH_P_IP)) {
+        struct iphdr *ip = data + sizeof(*eth);
+        if ((void*)ip + sizeof(*ip) <= data_end) {
+            struct ipv4_header iphdr = {
+                .src = ip->saddr,
+                .dst = ip->daddr
+            };
+            packet.ipheader.ipv4 = iphdr;
+        }
+    }
+
+    if (packet.h_protocol == htons(ETH_P_IPV6)) {
+        struct ipv6hdr *ip = data + sizeof(*eth);
+        if ((void*)ip + sizeof(*ip) <= data_end) { 
+            struct ipv6_header iphdr;
+            for (int i=0; i<IPV6_ALEN; i++) {
+                iphdr.src_addr[i] = ip->src_addr[i];
+                iphdr.dst_addr[i] = ip->dst_addr[i];
+            };
+            packet.ipheader.ipv6 = iphdr;
+        }
+    }
+
+    // send the ethernet packet to the userspace program.
+    bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU, &packet, sizeof(packet));
     return XDP_PASS;
 }
 

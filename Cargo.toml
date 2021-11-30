@@ -20,3 +20,9 @@ features = ["backtrace"]
 git = "https://github.com/aya-rs/aya"
 branch="main"
 features = ["async_tokio"]
+
+[dependencies.pnet]
+version = "0.28.0"
+
+[dependencies.zerocopy]
+version = "0.6.1"
