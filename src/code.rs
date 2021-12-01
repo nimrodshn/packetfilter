@@ -9,17 +9,19 @@ use std::convert::TryFrom;
 use std::convert::TryInto;
 use std::net;
 use tokio::{signal, task};
+use crate::config::Config;
 
 const IFACE: &str = "eth0";
 
 pub struct Code {
     bpf: Bpf,
+    config: Config,
 }
 
 impl Code {
-    pub fn new(bytecode: &[u8]) -> Result<Self> {
+    pub fn new(bytecode: &[u8], config: Config) -> Result<Self> {
         let bpf = Bpf::load(bytecode)?;
-        Ok(Self { bpf })
+        Ok(Self { bpf, config })
     }
 
     pub async fn exec(&mut self) -> Result<()> {
