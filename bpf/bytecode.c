@@ -14,6 +14,8 @@ struct bpf_map_def SEC("maps/events") events = {
     .max_entries = 1024,
 };
 
+// ipv4_header is the subset of the ipv4 header which will get sent to 
+// the user space.
 struct ipv4_header {
     unsigned int src;
     unsigned int dst;
@@ -21,6 +23,8 @@ struct ipv4_header {
 
 const int IPV6_ALEN = 16;
 
+// ipv6hdr is the entire header for
+// the ipv6 datagram - of which we only need the source and destination.
 struct ipv6hdr {
     uint32_t 	vtc_flow;
     uint16_t 	payload_len;
@@ -30,16 +34,19 @@ struct ipv6hdr {
     uint8_t 	dst_addr [IPV6_ALEN];
 };
 
+// ipv6_header is the header information sent to the user space.
 struct ipv6_header {
     uint8_t 	src_addr [IPV6_ALEN];
     uint8_t 	dst_addr [IPV6_ALEN];
 };
 
+// ip_header is a union containing either an ipv6 or ipv4 header.
 union ip_header {
     struct ipv4_header ipv4;
     struct ipv6_header ipv6;
 };
 
+// eth_packet is the Ethernet packet sent to the user space.
 struct __attribute__((__packed__)) eth_packet {
     unsigned char h_dest[ETH_ALEN];
     unsigned char h_source[ETH_ALEN];
