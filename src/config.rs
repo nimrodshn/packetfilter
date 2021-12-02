@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use std::fs::read_to_string;
 use std::path::Path;
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 pub struct Config {
     network_rule_collections: Vec<NetworkRuleCollection>,
@@ -17,7 +17,7 @@ impl Config {
     }
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 struct NetworkRuleCollection {
     name: String,
@@ -25,20 +25,21 @@ struct NetworkRuleCollection {
     rules: Vec<NetworkRule>,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 enum RuleActionType {
     Deny,
     Allow,
-    LogOnly
+    LogOnly,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 struct RuleAction {
-    r#type: RuleActionType
+    // 'type'j is a keyword, in order to serialize this field name the compiler requires the 'r#' prefix.
+    r#type: RuleActionType,
 }
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 #[serde(rename_all = "PascalCase")]
 struct NetworkRule {
     actions: Vec<RuleAction>,

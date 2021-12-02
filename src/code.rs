@@ -1,3 +1,4 @@
+use crate::config::Config;
 use crate::packet::{Layer3Hdr, Packet};
 use anyhow::Result;
 use aya::maps::perf::AsyncPerfEventArray;
@@ -9,7 +10,6 @@ use std::convert::TryFrom;
 use std::convert::TryInto;
 use std::net;
 use tokio::{signal, task};
-use crate::config::Config;
 
 const IFACE: &str = "eth0";
 

@@ -57,7 +57,7 @@ llvm-objdump-12 -S ./bytecode.x86.o
 
 Than run the target binary as root: 
 ```
-sudo  ./target/debug/packetfilter run
+sudo  ./target/debug/packetfilter run --config-file=/path/to/config.json
 ```
 
 By default it will load the binary under `/bpf`.

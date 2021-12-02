@@ -67,6 +67,7 @@ impl<'a> Packet<'a> {
                 ))
             }
         };
+
         Ok(Packet {
             ether_header,
             ip_header,

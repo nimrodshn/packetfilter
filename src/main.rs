@@ -1,4 +1,4 @@
-use anyhow::{Result,anyhow};
+use anyhow::{anyhow, Result};
 use clap::{App, Arg, ArgMatches, SubCommand};
 use packetfilter::code::Code;
 use packetfilter::config::Config;
@@ -29,7 +29,7 @@ async fn main() -> Result<()> {
                         .long(CONFIG_FILE)
                         .value_name("CONFIG-FILE")
                         .takes_value(true)
-                        .required(true)
+                        .required(true),
                 )
                 .arg(
                     Arg::with_name(BPF_PROGRAM_FILE)
@@ -37,8 +37,8 @@ async fn main() -> Result<()> {
                         .long(BPF_PROGRAM_FILE)
                         .takes_value(true)
                         .value_name("FILE")
-                        .required(false)
-                )
+                        .required(false),
+                ),
         )
         .get_matches();
 
