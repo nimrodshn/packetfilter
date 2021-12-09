@@ -1,5 +1,5 @@
 CLANG   ?= clang
-LLC     ?= llc
+LLC     ?= llc-10
 OPT     ?= opt
 DIS     ?= llvm-dis
 

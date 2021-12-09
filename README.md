@@ -1,45 +1,27 @@
 # packetfilter
 
-An [eBPF](https://ebpf.io/) based `packetfilter` for tracking incoming requests and filtering based on a set of rules.
+An [eBPF](https://ebpf.io/) based `packetfilter` for tracking incoming requests and filtering based on a set of rules. 
 
 ## Dependencies
-
 - llvm >= 10
 - llc >= 10
 - clang >= 10
 - opt >= 10
-- dwarves >= 1.19  
 
-This projects requires a kernel compiled with BTF file format support (CONFIG_DEBUG_INFO_BTF=y) in order
-to generate the proper included headers for kernel space.
-
-Currently Azure VM's do not support BTF so to setup one would need to download a new kernel image:
+1. Retrieve the archive signature for `llvm-10`:
 ```
-# OPTION 1:
-> apt-get source linux-image-unsigned-$(uname -r)
-
-# OPTION 2: 
-> wget https://launchpad.net/ubuntu/+archive/primary/+sourcefiles/linux-azure-5.4/5.4.0-1063.66~18.04.1/linux-azure-5.4_5.4.0.orig.tar.gz // or some other version.
-```
-Than compile the kernel using the following instructions:
-```
-1. cd linux-5.4
-2. Copy you're boot config: `sudo cp /boot/config-.. .config`
-3. Edit the .config and set `CONFIG_DEBUG_INFO_BTF=y`.
-4. Edit the Makefile with `EXTRAVERSION` (=-btf or whatever name you want to identify this kernel).
+wget --no-check-certificate -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
 ```
 
-Building the kernel:
+2. Add the PPA where to install from:
 ```
-1. make oldconfig
-2. Edit the Makefile and comment out (i.e. `# CONFIG_SYSTEM_TRUSTED_KEYS =..`).
-3. make -j 4
-4. sudo make INSTALL_MOD_STRIP=1 modules_install
-5. sudo make install
-6. Reboot machine (from the portal) and cd into the machine again.
-7. Check the new version for the kernel using `uname -r`.
-8. Copy the contents of the newly built `linux-5.4/include` folder from the kernel folder to youre `/usr/include`.
+add-apt-repository 'deb http://apt.llvm.org/bionic/   llvm-toolchain-bionic-10  main'
 ```
+3. Update packages: `sudo apt update`.
+4. sudo apt-get install llvm-10 lldb-10 llvm-10-dev libllvm10 llvm-10-runtime
+
+## Important note:
+The BPF programs under `/bpf` is intentionally targeting the Azure VM running `Ubuntu 18.04` and the kernel version the comes with it - version `5.4.0-1064-azure` (as opposed to the CO:RE paradigm) as it is intended to run on such a machine.
 
 ## Setting up XDP
 Make sure to disable LRO (Large recieve offloading) as XDP does not support jumbo frames or LRO:

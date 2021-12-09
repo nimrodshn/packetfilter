@@ -29,13 +29,6 @@ static int (*bpf_map_update_elem)(void *map, const void *key, const void *value,
 	(void *) BPF_FUNC_map_update_elem;
 static int (*bpf_map_delete_elem)(void *map, const void *key) =
 	(void *) BPF_FUNC_map_delete_elem;
-static int (*bpf_map_push_elem)(void *map, const void *value,
-				unsigned long long flags) =
-	(void *) BPF_FUNC_map_push_elem;
-static int (*bpf_map_pop_elem)(void *map, void *value) =
-	(void *) BPF_FUNC_map_pop_elem;
-static int (*bpf_map_peek_elem)(void *map, void *value) =
-	(void *) BPF_FUNC_map_peek_elem;
 static int (*bpf_probe_read)(void *dst, int size, const void *unsafe_ptr) =
 	(void *) BPF_FUNC_probe_read;
 static unsigned long long (*bpf_ktime_get_ns)(void) =
@@ -93,146 +86,21 @@ static int (*bpf_setsockopt)(void *ctx, int level, int optname, void *optval,
 static int (*bpf_getsockopt)(void *ctx, int level, int optname, void *optval,
 			     int optlen) =
 	(void *) BPF_FUNC_getsockopt;
-static int (*bpf_sock_ops_cb_flags_set)(void *ctx, int flags) =
-	(void *) BPF_FUNC_sock_ops_cb_flags_set;
 static int (*bpf_sk_redirect_map)(void *ctx, void *map, int key, int flags) =
 	(void *) BPF_FUNC_sk_redirect_map;
-static int (*bpf_sk_redirect_hash)(void *ctx, void *map, void *key, int flags) =
-	(void *) BPF_FUNC_sk_redirect_hash;
 static int (*bpf_sock_map_update)(void *map, void *key, void *value,
 				  unsigned long long flags) =
 	(void *) BPF_FUNC_sock_map_update;
-static int (*bpf_sock_hash_update)(void *map, void *key, void *value,
-				   unsigned long long flags) =
-	(void *) BPF_FUNC_sock_hash_update;
 static int (*bpf_perf_event_read_value)(void *map, unsigned long long flags,
 					void *buf, unsigned int buf_size) =
 	(void *) BPF_FUNC_perf_event_read_value;
 static int (*bpf_perf_prog_read_value)(void *ctx, void *buf,
 				       unsigned int buf_size) =
 	(void *) BPF_FUNC_perf_prog_read_value;
-static int (*bpf_override_return)(void *ctx, unsigned long rc) =
-	(void *) BPF_FUNC_override_return;
-static int (*bpf_msg_redirect_map)(void *ctx, void *map, int key, int flags) =
-	(void *) BPF_FUNC_msg_redirect_map;
-static int (*bpf_msg_redirect_hash)(void *ctx,
-				    void *map, void *key, int flags) =
-	(void *) BPF_FUNC_msg_redirect_hash;
-static int (*bpf_msg_apply_bytes)(void *ctx, int len) =
-	(void *) BPF_FUNC_msg_apply_bytes;
-static int (*bpf_msg_cork_bytes)(void *ctx, int len) =
-	(void *) BPF_FUNC_msg_cork_bytes;
-static int (*bpf_msg_pull_data)(void *ctx, int start, int end, int flags) =
-	(void *) BPF_FUNC_msg_pull_data;
-static int (*bpf_msg_push_data)(void *ctx, int start, int end, int flags) =
-	(void *) BPF_FUNC_msg_push_data;
-static int (*bpf_msg_pop_data)(void *ctx, int start, int cut, int flags) =
-	(void *) BPF_FUNC_msg_pop_data;
-static int (*bpf_bind)(void *ctx, void *addr, int addr_len) =
-	(void *) BPF_FUNC_bind;
-static int (*bpf_xdp_adjust_tail)(void *ctx, int offset) =
-	(void *) BPF_FUNC_xdp_adjust_tail;
-static int (*bpf_skb_get_xfrm_state)(void *ctx, int index, void *state,
-				     int size, int flags) =
-	(void *) BPF_FUNC_skb_get_xfrm_state;
-static int (*bpf_sk_select_reuseport)(void *ctx, void *map, void *key, __u32 flags) =
-	(void *) BPF_FUNC_sk_select_reuseport;
-static int (*bpf_get_stack)(void *ctx, void *buf, int size, int flags) =
-	(void *) BPF_FUNC_get_stack;
-static int (*bpf_fib_lookup)(void *ctx, struct bpf_fib_lookup *params,
-			     int plen, __u32 flags) =
-	(void *) BPF_FUNC_fib_lookup;
-static int (*bpf_lwt_push_encap)(void *ctx, unsigned int type, void *hdr,
-				 unsigned int len) =
-	(void *) BPF_FUNC_lwt_push_encap;
-static int (*bpf_lwt_seg6_store_bytes)(void *ctx, unsigned int offset,
-				       void *from, unsigned int len) =
-	(void *) BPF_FUNC_lwt_seg6_store_bytes;
-static int (*bpf_lwt_seg6_action)(void *ctx, unsigned int action, void *param,
-				  unsigned int param_len) =
-	(void *) BPF_FUNC_lwt_seg6_action;
-static int (*bpf_lwt_seg6_adjust_srh)(void *ctx, unsigned int offset,
-				      unsigned int len) =
-	(void *) BPF_FUNC_lwt_seg6_adjust_srh;
-static int (*bpf_rc_repeat)(void *ctx) =
-	(void *) BPF_FUNC_rc_repeat;
-static int (*bpf_rc_keydown)(void *ctx, unsigned int protocol,
-			     unsigned long long scancode, unsigned int toggle) =
-	(void *) BPF_FUNC_rc_keydown;
-static unsigned long long (*bpf_get_current_cgroup_id)(void) =
-	(void *) BPF_FUNC_get_current_cgroup_id;
-static void *(*bpf_get_local_storage)(void *map, unsigned long long flags) =
-	(void *) BPF_FUNC_get_local_storage;
-static unsigned long long (*bpf_skb_cgroup_id)(void *ctx) =
-	(void *) BPF_FUNC_skb_cgroup_id;
-static unsigned long long (*bpf_skb_ancestor_cgroup_id)(void *ctx, int level) =
-	(void *) BPF_FUNC_skb_ancestor_cgroup_id;
-static struct bpf_sock *(*bpf_sk_lookup_tcp)(void *ctx,
-					     struct bpf_sock_tuple *tuple,
-					     int size, unsigned long long netns_id,
-					     unsigned long long flags) =
-	(void *) BPF_FUNC_sk_lookup_tcp;
-static struct bpf_sock *(*bpf_skc_lookup_tcp)(void *ctx,
-					     struct bpf_sock_tuple *tuple,
-					     int size, unsigned long long netns_id,
-					     unsigned long long flags) =
-	(void *) BPF_FUNC_skc_lookup_tcp;
-static struct bpf_sock *(*bpf_sk_lookup_udp)(void *ctx,
-					     struct bpf_sock_tuple *tuple,
-					     int size, unsigned long long netns_id,
-					     unsigned long long flags) =
-	(void *) BPF_FUNC_sk_lookup_udp;
-static int (*bpf_sk_release)(struct bpf_sock *sk) =
-	(void *) BPF_FUNC_sk_release;
 static int (*bpf_skb_vlan_push)(void *ctx, __be16 vlan_proto, __u16 vlan_tci) =
 	(void *) BPF_FUNC_skb_vlan_push;
 static int (*bpf_skb_vlan_pop)(void *ctx) =
 	(void *) BPF_FUNC_skb_vlan_pop;
-static int (*bpf_rc_pointer_rel)(void *ctx, int rel_x, int rel_y) =
-	(void *) BPF_FUNC_rc_pointer_rel;
-static void (*bpf_spin_lock)(struct bpf_spin_lock *lock) =
-	(void *) BPF_FUNC_spin_lock;
-static void (*bpf_spin_unlock)(struct bpf_spin_lock *lock) =
-	(void *) BPF_FUNC_spin_unlock;
-static struct bpf_sock *(*bpf_sk_fullsock)(struct bpf_sock *sk) =
-	(void *) BPF_FUNC_sk_fullsock;
-static struct bpf_tcp_sock *(*bpf_tcp_sock)(struct bpf_sock *sk) =
-	(void *) BPF_FUNC_tcp_sock;
-static struct bpf_sock *(*bpf_get_listener_sock)(struct bpf_sock *sk) =
-	(void *) BPF_FUNC_get_listener_sock;
-static int (*bpf_skb_ecn_set_ce)(void *ctx) =
-	(void *) BPF_FUNC_skb_ecn_set_ce;
-static int (*bpf_tcp_check_syncookie)(struct bpf_sock *sk,
-	    void *ip, int ip_len, void *tcp, int tcp_len) =
-	(void *) BPF_FUNC_tcp_check_syncookie;
-static int (*bpf_sysctl_get_name)(void *ctx, char *buf,
-				  unsigned long long buf_len,
-				  unsigned long long flags) =
-	(void *) BPF_FUNC_sysctl_get_name;
-static int (*bpf_sysctl_get_current_value)(void *ctx, char *buf,
-					   unsigned long long buf_len) =
-	(void *) BPF_FUNC_sysctl_get_current_value;
-static int (*bpf_sysctl_get_new_value)(void *ctx, char *buf,
-				       unsigned long long buf_len) =
-	(void *) BPF_FUNC_sysctl_get_new_value;
-static int (*bpf_sysctl_set_new_value)(void *ctx, const char *buf,
-				       unsigned long long buf_len) =
-	(void *) BPF_FUNC_sysctl_set_new_value;
-static int (*bpf_strtol)(const char *buf, unsigned long long buf_len,
-			 unsigned long long flags, long *res) =
-	(void *) BPF_FUNC_strtol;
-static int (*bpf_strtoul)(const char *buf, unsigned long long buf_len,
-			  unsigned long long flags, unsigned long *res) =
-	(void *) BPF_FUNC_strtoul;
-static void *(*bpf_sk_storage_get)(void *map, struct bpf_sock *sk,
-				   void *value, __u64 flags) =
-	(void *) BPF_FUNC_sk_storage_get;
-static int (*bpf_sk_storage_delete)(void *map, struct bpf_sock *sk) =
-	(void *)BPF_FUNC_sk_storage_delete;
-static int (*bpf_send_signal)(unsigned sig) = (void *)BPF_FUNC_send_signal;
-static long long (*bpf_tcp_gen_syncookie)(struct bpf_sock *sk, void *ip,
-					  int ip_len, void *tcp, int tcp_len) =
-	(void *) BPF_FUNC_tcp_gen_syncookie;
 
 /* llvm builtin functions that eBPF C program may use to
  * emit BPF_LD_ABS and BPF_LD_IND instructions
@@ -275,8 +143,6 @@ struct bpf_map_def {
 
 static int (*bpf_skb_load_bytes)(void *ctx, int off, void *to, int len) =
 	(void *) BPF_FUNC_skb_load_bytes;
-static int (*bpf_skb_load_bytes_relative)(void *ctx, int off, void *to, int len, __u32 start_header) =
-	(void *) BPF_FUNC_skb_load_bytes_relative;
 static int (*bpf_skb_store_bytes)(void *ctx, int off, void *from, int len, int flags) =
 	(void *) BPF_FUNC_skb_store_bytes;
 static int (*bpf_l3_csum_replace)(void *ctx, int off, int from, int to, int flags) =

@@ -1,7 +1,7 @@
 #include <linux/if_ether.h>
 #include <linux/ip.h>
 #include <netinet/in.h>
-#include <uapi/linux/bpf.h>
+#include <linux/bpf.h>
 #include <linux/netdevice.h>
 #include <net/ethernet.h>
 #include <linux/version.h>

@@ -1,0 +1,608 @@
+{
+    "ApplicationRuleCollections": [
+        {
+            "Name": "DEFAULT_COLLECTION",
+            "Priority": 65535,
+            "Rules": [
+                {
+                    "Name": "DEFAULT_RULE",
+                    "Priority": 5000,
+                    "TargetUrls": [
+                        "*"
+                    ],
+                    "Protocols": [
+                        {
+                            "Port": 80,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 443,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ruleSourceIpGroupHttps",
+                    "Priority": 300,
+                    "TargetUrls": [
+                        "*.de"
+                    ],
+                    "Protocols": [
+                        {
+                            "Port": 80,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 443,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup1"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ]
+                },
+                {
+                    "Name": "ruleSourceIpGroupMsSql",
+                    "Priority": 350,
+                    "TargetUrls": [
+                                "sql1.database.windows.net"
+                    ],
+                    "Protocols": [
+                        {
+                            "ProtocolType": "Mssql",
+                            "Port": 1433
+                        }
+                    ],
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup1",
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "collection123",
+            "Priority": 27,
+            "Rules": [
+                {
+                    "Name": "rule774",
+                    "Priority": 8,
+                    "TargetUrls": [
+                        "www.google.com",
+                        "www.bing.com",
+                        "*.windows.net",
+                        "*",
+                        "*a.edu"
+                    ],
+                    "Protocols": [
+                        {
+                            "Port": 80,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 443,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ]
+                },
+                {
+                    "Name": "rule7235",
+                    "Priority": 3,
+                    "Description": "super one",
+                    "Protocols": [
+                        {
+                            "Port": 777,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 888,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "SourceIps": [],
+                    "TargetUrls": [
+                        "www.yahoo.com"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ]
+                },
+                {
+                    "Name": "rule2835",
+                    "Priority": 2,
+                    "Protocols": [
+                        {
+                            "Port": 80,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 443,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "SourceIps": [
+                        "192.168.2.0/24",
+                        "192.168.2.5",
+                        "*"
+                    ],
+                    "TargetUrls": [
+                        "*.com"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "collection456",
+            "Priority": 13,
+            "Rules": [
+                {
+                    "Name": "rule825",
+                    "Priority": 6,
+                    "Protocols": [
+                        {
+                            "Port": 444,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 555,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "SourceIps": [
+                        "*"
+                    ],
+                    "TargetUrls": [
+                        "www.wikipedia.org",
+                        "www.msn.com"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ]
+                },
+                {
+                    "Name": "rule023",
+                    "Priority": 9,
+                    "Protocols": [
+                        {
+                            "Port": 80,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 443,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "TargetUrls": [
+                        "www.google.com",
+                        "www.msn.com"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ]
+                },
+                {
+                    "Name": "rule19593",
+                    "Priority": 13,
+                    "Description": "second one",
+                    "Protocols": [
+                        {
+                            "Port": 80,
+                            "ProtocolType": "http"
+                        },
+                        {
+                            "Port": 443,
+                            "ProtocolType": "https"
+                        }
+                    ],
+                    "SourceIps": [
+                        "1.1.1.1-10.1.2.1"
+                    ],
+                    "TargetUrls": [
+                        "www.yahoo.com",
+                        "www.b92.net",
+                        "b92s.net",
+                        "*.firefox.com",
+                        "*.windows.net",
+                        "*.firefox.com",
+                        "*.msftconnecttest.com",
+                        "*.windows.com",
+                        "*.microsoft.com",
+                        "*.yimg.com"
+                    ],
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "NetworkRuleCollections": [
+        {
+            "Name": "netrc1",
+            "Priority": 200,
+            "Rules": [
+                {
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [
+                        "12.12.12.44"
+                    ],
+                    "DestinationIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2",
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG232/providers/Microsoft.Network/ipGroups/ipGroup09"
+                    ],
+                    "DestinationPorts": [
+                        "80",
+                        "443",
+                        "8000-8999"
+                    ],
+                    "Direction": "Outbound",
+                    "Name": "rule1",
+                    "Priority": 200,
+                    "Protocols": [
+                        "TCP",
+                        "UDP"
+                    ],
+                    "SourceIps": [
+                        "10.11.12.0/24"
+                    ],
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2"
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "netrc2",
+            "Priority": 150,
+            "Rules": [
+                {
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [
+                        "10.16.10.0/24",
+                        "11.16.11.87",
+                        "AzureActiveDirectory"
+                    ],
+                    "DestinationPorts": [
+                        "40000",
+                        "*",
+                        "40001"
+                    ],
+                    "Direction": "Outbound",
+                    "Name": "netrc2_rule1",
+                    "Priority": 100,
+                    "Protocols": [
+                        "TCP"
+                    ],
+                    "SourceIps": [
+                        "10.11.12.0/24"
+                    ]
+                },
+                {
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [],
+                    "DestinationPorts": [
+                        "20002-20008",
+                        "20018",
+                        "20200-30112",
+                        "30113",
+                        "30114",
+                        "30115",
+                        "30116",
+                        "30117",
+                        "30118",
+                        "30119",
+                        "30120",
+                        "30121",
+                        "30122",
+                        "30123",
+                        "30124",
+                        "30125",
+                        "30126",
+                        "30127",
+                        "30128",
+                        "30129",
+                        "30130",
+                        "30131"
+                    ],
+                    "Direction": "Outbound",
+                    "Name": "netrc3_rule60",
+                    "Priority": 142,
+                    "Protocols": [
+                        "udp",
+                        "icmp"
+                    ],
+                    "SourceIps": []
+                },
+                {
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [
+                        "10.16.10.0/24",
+                        "AppService",
+                        "11.16.11.5"
+                    ],
+                    "DestinationPorts": [
+                        "10001-10005",
+                        "10008",
+                        "10009-10012"
+                    ],
+                    "Direction": "Outbound",
+                    "Name": "netrc3_rule1",
+                    "Priority": 121,
+                    "Protocols": [
+                        "any"
+                    ],
+                    "SourceIps": [ ],
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG232/providers/Microsoft.Network/ipGroups/ipGroup09"
+                    ]
+                },
+                {
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [
+                        "20.26.20.0/16",
+                        "50.50.50.50-60.60.60.60",
+                        "41.46.41.5",
+                        "70.70.70.70-80.80.80.80"
+                    ],
+                    "DestinationPorts": [
+                        "50000-50003",
+                        "50007-50012"
+                    ],
+                    "Direction": "Outbound",
+                    "Name": "netrc2_rule2",
+                    "Priority": 50,
+                    "Protocols": [
+                        "UDP"
+                    ],
+                    "SourceIps": [
+                        "10.11.12.0/24",
+                        "10.11.16.5",
+                        "10.11.13.0/24",
+                        "30.30.30.30-40.40.40.40"
+                    ]
+                },
+                {
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [],
+                    "DestinationPorts": [],
+                    "Direction": "Outbound",
+                    "Name": "allow_all_10.1.0.0/16",
+                    "Priority": 10,
+                    "Protocols": [
+                        "any"
+                    ],
+                    "SourceIps": [
+                        "10.1.0.0/16"
+                    ]
+                }
+            ]
+        },
+        {
+            "Name": "netrc3",
+            "Priority": 300,
+            "Rules": [
+                {
+                    "Actions": [
+                        {
+                            "Type": "Allow"
+                        }
+                    ],
+                    "Description": null,
+                    "DestinationIps": [
+                        "*"
+                    ],
+                    "DestinationIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup1"
+                    ],
+                    "DestinationPorts": [
+                        "80",
+                        "443",
+                        "8000-8999"
+                    ],
+                    "Direction": "Outbound",
+                    "Name": "rule552",
+                    "Priority": 200,
+                    "Protocols": [
+                        "TCP",
+                        "UDP",
+                        "ICMP"
+                    ],
+                    "SourceIps": [
+                        "41.41.41.0/24"
+                    ],
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2"
+                    ]
+                }
+            ]
+         }
+    ],
+    "NatRuleCollections": [
+        {
+            "Name": "natRc1",
+            "Priority": 201,
+            "Action": {
+                "Type": "Dnat"
+            },
+            "Rules": [
+                {
+                    "Name": "DnatRule3",
+                    "Protocols": [
+                        "UDP"
+                    ],
+                    "SourceIps": [
+                        "100.99.99.99"
+                    ],
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2",
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup1",
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG232/providers/Microsoft.Network/ipGroups/ipGroup09"
+                    ],
+                    "DestinationIps": [
+                        "52.253.225.60"
+                    ],
+                    "DestinationPorts": [
+                        "63016"
+                    ],
+                    "TranslatedIp": "10.0.2.5",
+                    "TranslatedPort": "50000"
+                },
+                {
+                    "Name": "DnatRule4",
+                    "Protocols": [
+                        "TCP"
+                    ],
+                    "SourceIps": [
+                        "*"
+                    ],
+                    "DestinationIps": [
+                        "52.253.225.83"
+                    ],
+                    "DestinationPorts": [
+                        "63021"
+                    ],
+                    "TranslatedIp": "10.0.2.4",
+                    "TranslatedPort": "3389"
+                },
+                {
+                    "Name": "DnatRule5",
+                    "Protocols": [
+                        "TCP"
+                    ],
+                    "SourceIps": [
+                        "*"
+                    ],
+                    "DestinationIps": [
+                        "52.253.225.90"
+                    ],
+                    "DestinationPorts": [
+                        "63022"
+                    ],
+                    "TranslatedIp": "10.0.2.5",
+                    "TranslatedPort": "22"
+                },
+                {
+                    "Name": "DnatRule6",
+                    "Protocols": [
+                        "TCP"
+                    ],
+                    "SourceIps": null,
+                    "SourceIpGroups": [
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup1",
+                        "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2"
+                    ],
+                    "DestinationIps": [
+                        "150.150.150.150"
+                    ],
+                    "DestinationPorts": [
+                        "63022"
+                    ],
+                    "TranslatedFqdn": "server1.internal.com",
+                    "TranslatedPort": "22"
+                }
+            ]
+        }
+    ],
+    "ThreatIntel": {
+        "Mode": 0,
+        "Whitelist": {
+            "FQDNs": [
+                "www.microsoft.com",
+                "www.google.com"
+            ],
+            "IPAddresses": [
+                "8.8.8.8",
+                "0.0.0.0"
+            ]
+        }
+    },
+    "IpGroups": [
+        {
+            "Id": "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup1",
+            "IpAddresses": [
+                "10.0.0.0/24",
+                "11.9.0.0/24",
+                "13.9.0.0-15.6.6.7",
+                "115.15.15.15"
+            ]
+        },
+        {
+            "Id": "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG/providers/Microsoft.Network/ipGroups/ipGroup2",
+            "IpAddresses": [
+                "12.0.0.0/24",
+                "13.9.0.0/24"
+            ]
+        },
+        {
+            "Id": "/subscriptions/e407ae4c-40b6-44e2-9614-d4e938faa0a9/resourceGroups/someRG232/providers/Microsoft.Network/ipGroups/ipGroup09",
+            "IpAddresses": [
+                "25.0.0.0/24",
+                "86.9.0.0/24",
+                "*"
+            ]
+        }
+    ]
+}
