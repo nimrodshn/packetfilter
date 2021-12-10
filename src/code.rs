@@ -1,6 +1,6 @@
 use crate::config::Config;
 use crate::packet::{Layer3Hdr, Packet};
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use aya::maps::perf::AsyncPerfEventArray;
 use aya::programs::{Xdp, XdpFlags};
 use aya::util::online_cpus;
@@ -28,11 +28,15 @@ impl Code {
         let program_names = self
             .bpf
             .programs()
-            .map(|p| p.name().to_owned())
+            .map(|(name, _)| name.to_owned())
             .collect::<Vec<_>>();
 
         for name in program_names {
-            let probe: &mut Xdp = self.bpf.program_mut(&name)?.try_into()?;
+            let probe: &mut Xdp = self
+                .bpf
+                .program_mut(&name)
+                .ok_or(anyhow!("Failed to find a BPF program with name: {}", name))?
+                .try_into()?;
             probe.load()?;
             probe.attach(IFACE, XdpFlags::default())?;
         }
@@ -56,14 +60,14 @@ impl Code {
                         match packet.ip_header {
                             Layer3Hdr::IPv4(ipv4) => {
                                 println!(
-                                    "IPV4 PACKET LOG: SOURC: {},  DESTINATION: {}",
+                                    "IPV4 PACKET LOG: SOURCE: {},  DESTINATION: {}",
                                     net::Ipv4Addr::from(ipv4.src),
                                     net::Ipv4Addr::from(ipv4.dst),
                                 )
                             }
                             Layer3Hdr::IPv6(ipv6) => {
                                 println!(
-                                    "IPV6 PACKET LOG: SOURC: {},  DESTINATION: {}",
+                                    "IPV6 PACKET LOG: SOURCE: {},  DESTINATION: {}",
                                     net::Ipv6Addr::from(ipv6.src),
                                     net::Ipv6Addr::from(ipv6.dst),
                                 )

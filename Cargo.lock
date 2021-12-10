@@ -61,7 +61,7 @@ checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 [[package]]
 name = "aya"
 version = "0.10.6"
-source = "git+https://github.com/aya-rs/aya?branch=main#d983836959aef9b0aa62012bc519707a385bba36"
+source = "git+https://github.com/aya-rs/aya?branch=main#317fd576b4d746867bd0c6e14f5c0a698aaa1011"
 dependencies = [
  "bitflags 1.3.2",
  "bytes",
