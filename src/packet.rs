@@ -42,7 +42,6 @@ impl<'a> Packet<'a> {
     pub fn new(frame: &'a [u8]) -> Result<Packet<'a>> {
         let (ether_header, datagram) = LayoutVerified::<_, EthernetHeader>::new_from_prefix(frame)
             .ok_or_else(|| anyhow!("Failed to serialize Ethernet header."))?;
-
         let ip_header = match ether_header.ether_type {
             ETHER_TYPE_IPV4_BE => {
                 let (ip_header, _) =

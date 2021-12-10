@@ -1,0 +1,31 @@
+{
+    "NetworkRuleCollections": [
+        {
+            "Name": "netrc1",
+            "Priority": 200,
+            "Rules": [
+                {
+                    "Actions": [
+                        {
+                            "Type": "Deny"
+                        }
+                    ],
+                    "Description": null,
+                    "Direction": "Outbound",
+                    "Name": "rule1",
+                    "Priority": 200,
+                    "Protocols": [
+                        "TCP",
+                        "UDP"
+                    ],
+                    "SourceIps": [
+                        "2345:425:2CA1:0000:0000:0567:5673:23b5/64"
+                    ],
+                    "DestinationPorts": [
+                        "8080"
+                    ]
+                }
+            ]
+        }
+    ]
+}

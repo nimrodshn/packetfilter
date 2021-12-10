@@ -1,11 +1,22 @@
 #include <linux/if_ether.h>
 #include <linux/ip.h>
+#include <linux/ipv6.h>
+#include <string.h>
 #include <netinet/in.h>
 #include <linux/bpf.h>
 #include <linux/netdevice.h>
 #include <net/ethernet.h>
 #include <linux/version.h>
 #include "bpf_helpers.h"
+
+// source_ip_blacklist contains the IPv6 addresses to filter.
+struct bpf_map_def SEC("maps/source_ip_blacklist") source_ip_blacklist = {
+    .type        = BPF_MAP_TYPE_LPM_TRIE,
+    .key_size    = sizeof(struct bpf_lpm_trie_key) + sizeof(__u32) * 4,
+    .value_size  = sizeof(uint32_t),
+    .max_entries = 10000,
+    .map_flags   = BPF_F_NO_PREALLOC,
+};
 
 struct bpf_map_def SEC("maps/events") events = {
     .type        = BPF_MAP_TYPE_PERF_EVENT_ARRAY,
@@ -23,21 +34,10 @@ struct ipv4_header {
 
 const int IPV6_ALEN = 16;
 
-// ipv6hdr is the entire header for
-// the ipv6 datagram - of which we only need the source and destination.
-struct ipv6hdr {
-    uint32_t 	vtc_flow;
-    uint16_t 	payload_len;
-    uint8_t 	proto;
-    uint8_t 	hop_limits;
-    uint8_t 	src_addr [IPV6_ALEN];
-    uint8_t 	dst_addr [IPV6_ALEN];
-};
-
 // ipv6_header is the header information sent to the user space.
 struct ipv6_header {
-    uint8_t 	src_addr [IPV6_ALEN];
-    uint8_t 	dst_addr [IPV6_ALEN];
+    struct in6_addr src;
+    struct in6_addr dst;
 };
 
 // ip_header is a union containing either an ipv6 or ipv4 header.
@@ -56,7 +56,6 @@ struct __attribute__((__packed__)) eth_packet {
 
 SEC("xdp")
 int _xdp_ip_filter(struct xdp_md *ctx) {
-    bpf_printk("got a packet\n");     
     void *data_end = (void *)(long)ctx->data_end;
     void *data     = (void *)(long)ctx->data;
     struct ethhdr *eth = data;
@@ -81,7 +80,7 @@ int _xdp_ip_filter(struct xdp_md *ctx) {
         packet.h_dest[i] = eth->h_dest[i];
     };
 
-    if (packet.h_protocol == htons(ETH_P_IP)) {
+    if (packet.h_protocol == ntohs(ETH_P_IP)) {
         struct iphdr *ip = data + sizeof(*eth);
         if ((void*)ip + sizeof(*ip) <= data_end) {
             struct ipv4_header iphdr = {
@@ -92,14 +91,28 @@ int _xdp_ip_filter(struct xdp_md *ctx) {
         }
     }
 
-    if (packet.h_protocol == htons(ETH_P_IPV6)) {
+    if (packet.h_protocol == ntohs(ETH_P_IPV6)) {
         struct ipv6hdr *ip = data + sizeof(*eth);
         if ((void*)ip + sizeof(*ip) <= data_end) { 
+            // lookup struct is used for matching against blacklist.
+            struct  __attribute__((__packed__)) key {
+                struct bpf_lpm_trie_key base;
+                __uint128_t data;
+            } lookup;
+
+            lookup.base.prefixlen = 128;
+            memcpy(&lookup.data, &ip->saddr, sizeof(__uint128_t));
+            uint32_t *val = bpf_map_lookup_elem(&source_ip_blacklist, &lookup);
+            if (val != NULL) {
+                bpf_printk("Found a match for packet blacklist, dropping..\n");
+                return XDP_DROP;
+            }
+
             struct ipv6_header iphdr;
-            for (int i=0; i<IPV6_ALEN; i++) {
-                iphdr.src_addr[i] = ip->src_addr[i];
-                iphdr.dst_addr[i] = ip->dst_addr[i];
-            };
+            // iphdr struct is used for tracing
+            memcpy(&iphdr.src, &ip->saddr, sizeof(ip->saddr));
+            memcpy(&iphdr.dst, &ip->daddr, sizeof(ip->saddr));
+
             packet.ipheader.ipv6 = iphdr;
         }
     }
