@@ -61,14 +61,14 @@ checksum = "cdb031dd78e28731d87d56cc8ffef4a8f36ca26c38fe2de700543e627f8a464a"
 [[package]]
 name = "aya"
 version = "0.10.6"
-source = "git+https://github.com/aya-rs/aya?branch=main#317fd576b4d746867bd0c6e14f5c0a698aaa1011"
+source = "git+https://github.com/nimrodshn/aya?branch=add_map_type_lpm_trie#4109675bb1d8f6ae99ccd6985fc166dbf827d400"
 dependencies = [
  "bitflags 1.3.2",
  "bytes",
  "futures",
  "lazy_static",
  "libc",
- "object",
+ "object 0.28.1",
  "parking_lot",
  "thiserror",
  "tokio",
@@ -85,7 +85,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "miniz_oxide",
- "object",
+ "object 0.27.1",
  "rustc-demangle",
 ]
 
@@ -247,6 +247,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "ipnet"
+version = "2.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68f2d64f2edebec4ce84ad108148e67e1064789bee435edc5b60ad398714a3a9"
+dependencies = [
+ "serde",
+]
+
+[[package]]
 name = "ipnetwork"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -380,6 +389,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "object"
+version = "0.28.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ce8b38d41f9f3618fc23f908faae61510f8d8ce2d99cbe910641e8f1971f084"
+dependencies = [
+ "memchr",
+]
+
+[[package]]
 name = "once_cell"
 version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -394,6 +412,7 @@ dependencies = [
  "bytes",
  "clap",
  "ctrlc",
+ "ipnet",
  "log",
  "pnet",
  "serde",
