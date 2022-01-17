@@ -29,7 +29,7 @@ sudo apt-get install llvm-10     \
 The BPF program under `/bpf` is intentionally targeting the Azure VM running `Ubuntu 18.04` and the kernel version that comes with it - version `5.4.0-1064-azure` (as opposed to the CO-RE paradigm) as it is intended to run on such a machine.
 
 ## Setting up XDP
-Make sure to disable LRO (Large recieve offloading) as XDP does not support jumbo frames or LRO:
+Make sure to disable LRO (Large receive offloading) as XDP does not support jumbo frames or LRO:
 ```
 sudo ethtool --offload eth0 lro off
 ```
